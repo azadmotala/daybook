@@ -1,0 +1,90 @@
+# Daybook — what does not belong in version control.
+#
+# THIS REPOSITORY SHOULD STAY PRIVATE.
+# tools/release.ps1 carries the deployment target in plain text: the SSH host alias,
+# the remote document-root path, and the live site URL — someone
+# else's business site that Daybook is published into a subfolder of. Publishing this
+# repo would hand out a map of that server. Nothing here is a secret in the
+# credential sense (SSH keys live in ~/.ssh and are never in the tree), but the
+# hostnames, paths and URLs are infrastructure detail about a third party's site.
+#
+# There is genuinely little else to exclude. Zero dependencies, runtime and dev, so
+# no node_modules. No build step, so no build output — tools/stamp-sw.mjs edits sw.js
+# in place and that edit is committed. tools/release.ps1 stages into the system temp
+# directory, never into the tree. Everything below is either machine cruft or
+# something that must never be committed by accident.
+
+# --- Her diary. The one rule here that matters. -------------------------------
+# Exports are her backup and her exit (B6), and they are a named person's health
+# record (B3). They belong in her downloads folder, never in a repository. These
+# match what the app actually writes: daybook-backup-<date>.json and
+# daybook-<date>.csv. If one is ever dropped in here to inspect, git will not see it.
+daybook-backup-*.json
+daybook-*.csv
+*.export.json
+
+# And the same rule for readings from anywhere else. A mySugr export turned up in
+# the working directory on 2026-08-10 - untracked, not ignored, one `git add -A`
+# from being committed - with Blood Sugar Measurement and insulin columns in it.
+# The rule was never "our exports"; it is "nobody's readings", and hers may well
+# arrive from the app her meter came with rather than from this one.
+# Deliberately broad. Anything genuinely meant for the repo can be forced in with
+# `git add -f`, which is a decision someone makes on purpose.
+mySugr_Export_*.csv
+*[Ee]xport*.csv
+*[Ee]xport*.json
+*glucose*.csv
+*readings*.csv
+
+# --- The deploy target. The one file that must never be committed. -------------
+# tools/release.local.ps1 holds the SSH alias, remote folder and public URL of a
+# third party's server. The script refuses to run without it; the example beside
+# it is committed and shows the shape. This repo has a public mirror, and the
+# mirror must not know the target exists.
+tools/release.local.ps1
+
+# --- Machine-local Claude Code settings ---------------------------------------
+# .claude/settings.json IS committed — it is part of the constitution. The .local
+# variant is per-machine override and is not shared.
+.claude/settings.local.json
+
+# --- OS cruft -----------------------------------------------------------------
+# Windows is the host; macOS entries are here for anyone who ever clones it.
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.DS_Store
+.AppleDouble
+._*
+
+# --- Editors ------------------------------------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# --- Node ---------------------------------------------------------------------
+# Should never appear — package.json declares no dependencies of either kind and
+# `npm test` runs node --test directly. Present as a guard, not an expectation.
+node_modules/
+npm-debug.log*
+.npm/
+
+# --- Python -------------------------------------------------------------------
+# tools/make-icons.py is run by hand; `npm run dev` is python -m http.server.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- Transient ----------------------------------------------------------------
+*.log
+*.tgz
+*.tmp
+daybook-release-*/

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daybook — browser tests</title>
+
+<!-- With no icon link a browser probes /favicon.ico at the origin root, which does not exist here,
+     and every run logs a 404 on the one page whose console has to be worth reading. -->
+<link rel="icon" type="image/png" sizes="32x32" href="../../icons/favicon-32.png">
+
+<!-- The real stylesheet, because most of these tests read colours and layout the browser resolved. -->
+<link rel="stylesheet" href="../../styles.css">
+
+<style>
+  body { padding: 20px 16px 60px; max-width: 720px; margin: 0 auto; background: var(--paper); color: var(--ink); }
+  h1 { font-family: var(--font-display); font-size: 24px; margin: 0 0 4px; }
+  h1.pass { color: var(--state-in); }
+  h1.fail { color: var(--state-lo); }
+  p.where { color: var(--ink-2); font-size: 13px; margin: 0 0 18px; }
+  ol { padding-left: 22px; margin: 0; }
+  li { margin-bottom: 6px; font-size: 14px; }
+  li.pass { color: var(--ink-2); }
+  li.fail { color: var(--state-lo); font-weight: 700; }
+  pre { white-space: pre-wrap; font-size: 12px; background: var(--card);
+        border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin: 6px 0 0; }
+  /* Subjects render in here. Kept out of the way rather than hidden, because a test that reads
+     computed style needs its subject actually laid out. */
+  #sandbox { position: absolute; left: -10000px; top: 0; width: 375px; }
+</style>
+</head>
+<body>
+
+<div id="results">
+  <h1>running…</h1>
+</div>
+<p class="where">
+  The checks that need a real browser. Everything else runs on <code>npm test</code>.
+  Open this on the phone too: that is the only place Safari behaves like Safari.
+  <br>
+  <code>?only=</code> a substring runs just the matching tests.
+  <strong>This page never writes to the diary</strong>, and proves it as its last result.
+</p>
+
+<div id="sandbox"></div>
+
+<!--
+  The app's modules, in the order index.html loads them, with ONE deliberate omission:
+  js/app.js is not here. It boots on load and calls Store.init(), which reads and writes her
+  diary. Every other file is a plain IIFE with no load-time side effect, so it can be loaded and
+  questioned safely. Adding app.js to this list would make this page unsafe to open on her device.
+-->
+<script src="../../js/store.js"></script>
+<script src="../../js/engine.js"></script>
+<script src="../../js/ui.js"></script>
+<script src="../../js/demo.js"></script>
+<script src="../../js/update.js"></script>
+
+<script type="module">
+  import { run } from './runner.js';
+  import './tests.js';
+
+  const results = document.getElementById('results');
+  results.textContent = '';
+  run(results).catch((error) => {
+    // A throw from the runner itself (a ?only= that matched nothing) would otherwise leave the page
+    // sitting on "running…", which reads like a pass to anyone glancing at it.
+    const h = document.createElement('h1');
+    h.className = 'fail';
+    h.textContent = `the runner could not start: ${error.message}`;
+    results.append(h);
+  });
+</script>
+
+</body>
+</html>

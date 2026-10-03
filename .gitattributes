@@ -1,0 +1,38 @@
+# Line endings. The repository stores LF and checks out LF, on every machine.
+#
+# The host here is Windows with core.autocrlf=true, which rewrites LF to CRLF on
+# checkout. Without this file the bytes on disk become a property of *which clone
+# you are standing in* rather than of the content, and this app has two places
+# where that matters:
+#
+#   1. tools/stamp-sw.mjs fingerprints every precached file to derive the service
+#      worker's cache name. It already normalises line endings before hashing, and
+#      the comment there explains why — a fresh clone would otherwise compute a
+#      different stamp and test/precache.test.js would fail with a message telling
+#      you to restamp, which restamping does not fix. This file removes the cause
+#      rather than leaving that defence carrying the whole weight alone.
+#   2. tools/release.ps1 uploads the working tree as it stands. A CRLF checkout
+#      would publish files that are functionally identical to the live ones but
+#      byte-for-byte different, so every file would look changed on a deploy that
+#      changed nothing.
+#
+# It also silences the "LF will be replaced by CRLF" warning on every git add.
+
+* text=auto eol=lf
+
+# Binaries, declared rather than guessed. Git's heuristic already detects these
+# correctly, but a normalise applied to a woff2 or a png corrupts it, and that is
+# not a failure worth leaving to detection.
+*.woff2 binary
+*.png    binary
+*.ico    binary
+*.tgz    binary
+
+# Diff and merge hints. These are the files a diff is most often read on, and
+# marking their language gives git better hunk headers.
+*.js     diff=javascript
+*.mjs    diff=javascript
+*.css    diff=css
+*.html   diff=html
+*.py     diff=python
+*.md     diff=markdown

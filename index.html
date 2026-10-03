@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daybook: blood sugar diary</title>
+<meta name="description" content="A simple, private daily diary for blood sugar, movement, food, sleep and stress.">
+
+<meta name="theme-color" content="#F1F3F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1315" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Daybook">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <div class="alert" id="alert" role="alert" hidden></div>
+  <main class="view" id="view" tabindex="-1"></main>
+  <div class="update" id="update" hidden></div>
+  <nav class="tabbar" id="tabbar" aria-label="Main">
+    <button class="tab" data-tab="today" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 3v3M16 3v3M4.5 9.5h15"/></svg>
+      <span>Today</span>
+    </button>
+    <button class="tab" data-tab="history">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M8 19v-6M12 19V8M16 19v-9M20 19v-4"/></svg>
+      <span>History</span>
+    </button>
+    <button class="tab" data-tab="insights">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8L21 21"/></svg>
+      <span>Patterns</span>
+    </button>
+    <button class="tab" data-tab="more">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden></section>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="js/store.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/demo.js"></script>
+<script src="js/update.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
